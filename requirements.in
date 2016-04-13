@@ -1,0 +1,9 @@
+autoflake
+autopep8
+isort
+lxml
+pydocstyle
+pytz
+requests
+requests-ntlm
+six
