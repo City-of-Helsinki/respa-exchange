@@ -4,8 +4,8 @@ from configparser import ConfigParser
 from random import randint
 from uuid import uuid4
 
-from respa_exchange.calendar import GetCalendarItemsRequest, CreateCalendarItemRequest, DeleteCalendarItemRequest
-from respa_exchange.session import ExchangeSession
+from respa_exchange.ews.calendar import CreateCalendarItemRequest, DeleteCalendarItemRequest, GetCalendarItemsRequest
+from respa_exchange.ews.session import ExchangeSession
 
 logging.basicConfig(level=logging.DEBUG)
 

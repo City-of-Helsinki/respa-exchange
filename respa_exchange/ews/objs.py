@@ -1,4 +1,4 @@
-from respa_exchange.xml import NAMESPACES, T
+from .xml import NAMESPACES, T
 
 
 class ItemID:

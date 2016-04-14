@@ -1,4 +1,5 @@
 from datetime import date, datetime
+
 from pytz import utc
 
 EXCHANGE_DATETIME_FORMAT = u"%Y-%m-%dT%H:%M:%SZ"

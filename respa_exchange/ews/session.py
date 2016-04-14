@@ -4,7 +4,7 @@ import requests
 from lxml import etree
 from requests_ntlm import HttpNtlmAuth
 
-from respa_exchange.xml import NAMESPACES
+from .xml import NAMESPACES
 
 
 class ExchangeSession(requests.Session):

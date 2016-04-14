@@ -1,6 +1,6 @@
 from six import string_types
 
-from respa_exchange.xml import S, T
+from .xml import S, T
 
 
 class EWSRequest(object):
@@ -53,4 +53,3 @@ class EWSRequest(object):
         :return:
         """
         raise NotImplementedError("%r does not implement send()" % self)
-

@@ -1,8 +1,8 @@
-from respa_exchange.base import EWSRequest
-from respa_exchange.folders import get_distinguished_folder_id_element, GetFolderRequest
-from respa_exchange.objs import ItemID
-from respa_exchange.utils import as_utc, format_date_for_xml
-from respa_exchange.xml import M, NAMESPACES, T
+from .base import EWSRequest
+from .folders import get_distinguished_folder_id_element, GetFolderRequest
+from .objs import ItemID
+from .utils import format_date_for_xml
+from .xml import M, NAMESPACES, T
 
 
 def find_calendar_folder(sess, principal):
@@ -17,6 +17,7 @@ class GetCalendarItemsRequest(EWSRequest):
     """
     An EWS request to request the calendar items for a given principal's calendar folder.
     """
+
     def __init__(self, principal, start_date, end_date):
         body = M.FindItem(
             {u'Traversal': u'Shallow'},
