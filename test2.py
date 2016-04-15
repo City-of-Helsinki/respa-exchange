@@ -37,9 +37,11 @@ def test_create():
 
     ccir = CreateCalendarItemRequest(
         principal=test_principal,
-        start=start,
-        end=end,
-        subject="Test %s" % uuid4()
+        item_props=dict(
+            start=start,
+            end=end,
+            subject="Test %s" % uuid4()
+        )
     )
     item_id = ccir.send(sess)
     dcir = DeleteCalendarItemRequest(
