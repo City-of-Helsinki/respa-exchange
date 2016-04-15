@@ -7,6 +7,7 @@
 
 autoflake==0.6.6
 autopep8==1.2.2
+iso8601==0.1.11
 isort==4.2.5
 lxml==3.6.0
 pep8==1.7.0               # via autopep8
