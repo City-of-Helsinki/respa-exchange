@@ -33,7 +33,7 @@ class SoapSeller(ExchangeSession):
             if handler_rv is None:
                 continue
             return self._postprocess_handler_response(request, handler_rv)
-        raise ValueError("No SoapSeller handler could deal with %r" % request)
+        raise ValueError("No SoapSeller handler could deal with %r" % request)  # pragma: no cover
 
     def _get_handlers_from_delegate(self):
         for name in dir(self.handler_delegate):
@@ -42,7 +42,7 @@ class SoapSeller(ExchangeSession):
 
     def _postprocess_handler_response(self, request, handler_rv):
         if isinstance(handler_rv, Response):  # Direct response (could be useful)
-            return handler_rv
+            return handler_rv  # pragma: no cover
         envelope = S.Envelope(
             S.Header(),  # TODO: Fill me in?
             S.Body(handler_rv)
