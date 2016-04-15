@@ -1,6 +1,6 @@
 from six import string_types
 
-from respa_exchange.xml import S, T
+from .xml import S, T
 
 
 class EWSRequest(object):
@@ -52,5 +52,4 @@ class EWSRequest(object):
         :param sess: The EWSSession to send this request with.
         :return:
         """
-        raise NotImplementedError("%r does not implement send()" % self)
-
+        raise NotImplementedError("%r does not implement send()" % self)  # pragma: no cover

@@ -1,4 +1,6 @@
-from respa_exchange.xml import NAMESPACES, T
+import hashlib
+
+from .xml import NAMESPACES, T
 
 
 class ItemID:
@@ -24,3 +26,14 @@ class ItemID:
             id=item_id.attrib["Id"],
             change_key=item_id.attrib.get("ChangeKey")
         )
+
+    @property
+    def hash(self):
+        """
+        The hash of this item id's ID component.
+
+        Used for ExchangeReservation models.
+
+        :return:
+        """
+        return hashlib.md5(self.id.encode("utf8")).hexdigest()

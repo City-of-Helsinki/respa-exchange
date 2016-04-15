@@ -1,5 +1,5 @@
-from respa_exchange.base import EWSRequest
-from respa_exchange.xml import M, T
+from .base import EWSRequest
+from .xml import M, T
 
 
 def get_distinguished_folder_id_element(principal, folder_id):
@@ -22,6 +22,7 @@ class GetFolderRequest(EWSRequest):
     """
     Encapsulates a request to get the details of a distinguished folder.
     """
+
     def __init__(self, principal, dist_id):
         body = M.GetFolder(
             M.FolderShape(
