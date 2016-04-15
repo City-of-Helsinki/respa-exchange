@@ -1,6 +1,7 @@
 from django.contrib.admin import ModelAdmin, site
+from django.forms.widgets import PasswordInput
 
-from respa_exchange.models import ExchangeReservation, ExchangeResource
+from respa_exchange.models import ExchangeConfiguration, ExchangeReservation, ExchangeResource
 
 
 class ExchangeResourceAdmin(ModelAdmin):
@@ -20,5 +21,13 @@ class ExchangeReservationAdmin(ModelAdmin):
         return False  # pragma: no cover
 
 
+class ExchangeConfigurationAdmin(ModelAdmin):
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(ExchangeConfigurationAdmin, self).get_form(request, obj, **kwargs)
+        form.base_fields["password"].widget = PasswordInput(render_value=True)
+        return form
+
+
 site.register(ExchangeReservation, ExchangeReservationAdmin)
 site.register(ExchangeResource, ExchangeResourceAdmin)
+site.register(ExchangeConfiguration, ExchangeConfigurationAdmin)

@@ -119,10 +119,3 @@ TEMPLATES = [
         },
     },
 ]
-
-RESPA_EXCHANGE_ENABLED = True
-cfg = ConfigParser(default_section="respa-exchange")
-cfg.read(os.path.join(BASE_DIR, "respa-exchange.cfg"))
-RESPA_EXCHANGE_EWS_URL = cfg.get("respa-exchange", "url", fallback="http://localhost/")
-RESPA_EXCHANGE_EWS_USERNAME = cfg.get("respa-exchange", "username", fallback="CONTOSO\\dummy")
-RESPA_EXCHANGE_EWS_PASSWORD = cfg.get("respa-exchange", "password", fallback="secret")
