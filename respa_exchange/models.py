@@ -6,7 +6,7 @@ from django.utils.module_loading import import_string
 from django.utils.translation import ugettext_lazy as _
 
 from resources.models import Reservation, Resource
-from respa_exchange.ews.calendar import CreateCalendarItemRequest, DeleteCalendarItemRequest
+from respa_exchange.ews.calendar import CreateCalendarItemRequest, DeleteCalendarItemRequest, UpdateCalendarItemRequest
 from respa_exchange.ews.objs import ItemID
 
 
@@ -120,9 +120,9 @@ def _build_subject(res):
     bits = ["Respa"]
     if res.reserver_name:
         bits.append(res.reserver_name)
-    if res.user_id:
+    elif res.user_id:
         bits.append(res.user)
-    return " - ".join(bits)
+    return " - ".join(force_text(bit) for bit in bits)
 
 
 def _build_body(res):
@@ -205,23 +205,38 @@ class ExchangeReservation(models.Model):
         res = self.reservation
         if res.state != Reservation.CONFIRMED:
             return
+        assert isinstance(res, Reservation)
 
         ccir = CreateCalendarItemRequest(
-            principal=self.principal_email,
+            principal=force_text(self.principal_email),
+            item_props=self._get_calendar_item_props()
+        )
+        self.item_id = ccir.send(self.exchange.get_ews_session())
+        self.save()
+
+    def _get_calendar_item_props(self):
+        res = self.reservation
+        assert isinstance(res, Reservation)
+        return dict(
             start=res.begin,
             end=res.end,
             subject=_build_subject(res),
             body=_build_body(res),
             location=force_text(res.resource)
         )
-        self.item_id = ccir.send(self.exchange.get_ews_session())
-        self.save()
 
     def update_on_remote(self):
         res = self.reservation
         if res.state in (Reservation.DENIED, Reservation.CANCELLED):
             return self.delete_on_remote()
-            # TODO: Implement updates
+        # TODO: Should we try and track the state of the object to avoid sending superfluous updates?
+        ucir = UpdateCalendarItemRequest(
+            principal=force_text(self.principal_email),
+            item_id=self.item_id,
+            update_props=self._get_calendar_item_props()
+        )
+        self.item_id = ucir.send(self.exchange.get_ews_session())
+        self.save()
 
     def delete_on_remote(self):
         dcir = DeleteCalendarItemRequest(

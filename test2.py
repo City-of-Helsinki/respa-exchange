@@ -4,7 +4,9 @@ from configparser import ConfigParser
 from random import randint
 from uuid import uuid4
 
-from respa_exchange.ews.calendar import CreateCalendarItemRequest, DeleteCalendarItemRequest, GetCalendarItemsRequest
+from respa_exchange.ews.calendar import (
+    CreateCalendarItemRequest, DeleteCalendarItemRequest, GetCalendarItemsRequest, UpdateCalendarItemRequest
+)
 from respa_exchange.ews.session import ExchangeSession
 
 logging.basicConfig(level=logging.DEBUG)
@@ -37,11 +39,21 @@ def test_create():
 
     ccir = CreateCalendarItemRequest(
         principal=test_principal,
-        start=start,
-        end=end,
-        subject="Test %s" % uuid4()
+        item_props=dict(
+            start=start,
+            end=end,
+            subject="Test %s" % uuid4()
+        )
     )
     item_id = ccir.send(sess)
+    ucir = UpdateCalendarItemRequest(
+        principal=test_principal,
+        item_id=item_id,
+        update_props=dict(
+            subject="Test Edited %s" % uuid4()
+        )
+    )
+    item_id = ucir.send(sess)
     dcir = DeleteCalendarItemRequest(
         principal=test_principal,
         item_id=item_id
