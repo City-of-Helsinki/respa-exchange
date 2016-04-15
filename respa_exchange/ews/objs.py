@@ -19,9 +19,9 @@ class ItemID:
         :param tree:
         :rtype: ItemID
         """
-        item_id = tree.find("*//t:ItemId", namespaces=NAMESPACES)
+        item_id = tree.find(".//t:ItemId", namespaces=NAMESPACES)
         if item_id is None:
-            raise Exception("Something went wrong.")  # TODO: WHAT WENT WRONG? WHAT DID YOU SEE?
+            raise ValueError("Could not find ItemId element in tree %r" % tree)
         return cls(
             id=item_id.attrib["Id"],
             change_key=item_id.attrib.get("ChangeKey")
