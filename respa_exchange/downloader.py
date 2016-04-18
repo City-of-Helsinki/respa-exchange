@@ -1,13 +1,13 @@
 """
 Download Exchange events into Respa as reservations.
 """
+import datetime
+
 import iso8601
 from django.db.transaction import atomic
 from django.utils.timezone import now
-import datetime
-from lxml import etree
-from resources.models.reservation import Reservation
 
+from resources.models.reservation import Reservation
 from respa_exchange.ews.calendar import GetCalendarItemsRequest
 from respa_exchange.ews.objs import ItemID
 from respa_exchange.ews.xml import NAMESPACES
@@ -57,13 +57,18 @@ def _create_reservation_from_exchange(item_id, ex_resource, item_props):
 @atomic
 def sync_from_exchange(ex_resource, future_days=30):
     """
-    Sync current and future events for the given Exchange resource into
+    Synchronize from Exchange to Respa
+
+    Synchronizes current and future events for the given Exchange resource into
     the relevant Respa resource as reservations.
 
     :param ex_resource: The Exchange resource to sync
     :type ex_resource: respa_exchange.models.ExchangeResource
-    :return:
+    :param future_days: How many days into the future to look
+    :type future_days: int
     """
+    if not ex_resource.sync_to_respa:
+        return
     start_date = now()
     end_date = start_date + datetime.timedelta(days=future_days)
     gcir = GetCalendarItemsRequest(
@@ -97,7 +102,7 @@ def sync_from_exchange(ex_resource, future_days=30):
         ex_reservation.item_id_hash: ex_reservation
         for ex_reservation
         in ExchangeReservation.objects.select_related("reservation").filter(item_id_hash__in=hashes)
-        }
+    }
 
     for item_id, item in calendar_items.items():
         ex_reservation = extant_exchange_reservations.get(item_id.hash)

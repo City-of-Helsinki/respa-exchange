@@ -8,8 +8,8 @@ from django.utils.timezone import now
 from respa_exchange.downloader import sync_from_exchange
 from respa_exchange.ews.objs import ItemID
 from respa_exchange.ews.utils import format_date_for_xml
-from respa_exchange.ews.xml import M, T, NAMESPACES
-from respa_exchange.models import ExchangeResource, ExchangeReservation
+from respa_exchange.ews.xml import M, NAMESPACES, T
+from respa_exchange.models import ExchangeReservation, ExchangeResource
 from respa_exchange.tests.session import SoapSeller
 from respa_exchange.tests.utils import moments_close_enough
 
@@ -27,7 +27,7 @@ class FindItemsHandler(object):
             self._generate_calendar_item(props)
             for props
             in self._email_to_props.get(email_address, {}).values()
-            ]
+        ]
         return M.FindItemResponse(
             M.ResponseMessages(
                 M.FindItemResponseMessage(
@@ -84,8 +84,10 @@ def _generate_item_dict():
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("sync_enabled", (False, True))
 def test_download(
-    settings, space_resource, exchange
+    settings, space_resource, exchange,
+    sync_enabled
 ):
     email = "%s@example.com" % get_random_string()
     other_email = "%s@example.com" % get_random_string()
@@ -101,12 +103,16 @@ def test_download(
     ex_resource = ExchangeResource.objects.create(
         resource=space_resource,
         principal_email=email,
-        exchange=exchange
+        exchange=exchange,
+        sync_to_respa=sync_enabled
     )
     assert ex_resource.reservations.count() == 0
 
     # First sync...
     sync_from_exchange(ex_resource)
+    if not sync_enabled:
+        assert ex_resource.reservations.count() == 0
+        return  # No need to test the rest.
     assert ex_resource.reservations.count() == 2
     ex = _check_imported_reservation(item_id, item_dict)
 
