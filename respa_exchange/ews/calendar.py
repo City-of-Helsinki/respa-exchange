@@ -1,16 +1,8 @@
 from .base import EWSRequest
-from .folders import get_distinguished_folder_id_element, GetFolderRequest
+from .folders import get_distinguished_folder_id_element
 from .objs import ItemID
 from .utils import format_date_for_xml
 from .xml import M, NAMESPACES, T
-
-
-def find_calendar_folder(sess, principal):
-    # TODO: Necessary?
-    dist_id = "calendar"
-    req = GetFolderRequest(principal, dist_id)
-    resp = sess.soap(req)
-    return resp.xpath("//t:CalendarFolder", namespaces=NAMESPACES)[0]
 
 
 class GetCalendarItemsRequest(EWSRequest):
