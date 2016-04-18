@@ -8,6 +8,7 @@ setup(
     name='respa-exchange',
     version=__version__,
     description='Bidirectional Microsoft Exchange synchronization for Respa',
+    license='BSD',
     author='Aarni Koskela',
     author_email='aarni.koskela@andersinno.fi',
     classifiers=[
