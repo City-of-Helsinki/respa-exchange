@@ -22,7 +22,7 @@ class ExchangeReservationAdmin(ModelAdmin):
 
 
 class ExchangeConfigurationAdmin(ModelAdmin):
-    def get_form(self, request, obj=None, **kwargs):
+    def get_form(self, request, obj=None, **kwargs):  # pragma: no cover
         form = super(ExchangeConfigurationAdmin, self).get_form(request, obj, **kwargs)
         form.base_fields["password"].widget = PasswordInput(render_value=True)
         return form
