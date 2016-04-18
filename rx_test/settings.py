@@ -1,5 +1,4 @@
 import os
-from configparser import ConfigParser
 
 from django.utils.translation import ugettext_lazy as _
 from django_jinja.builtins import DEFAULT_EXTENSIONS
