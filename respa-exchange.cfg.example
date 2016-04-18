@@ -1,5 +1,0 @@
-[respa-exchange]
-url = https://contoso.com/EWS/Exchange.asmx
-username = NTLM\EWS_Service_Account
-password = gibson
-test-principal = purple-copy-machine@contoso.com

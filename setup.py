@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 from respa_exchange import __version__
 
@@ -15,7 +15,7 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
     ],
-    packages=['respa_exchange'],
+    packages=find_packages(include=['respa_exchange', 'respa_exchange.*']),
     include_package_data=True,
     install_requires=[l for l in open("requirements.txt", "rt").readlines() if l and not l.startswith("#")],
     zip_safe=False,
