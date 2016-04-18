@@ -50,12 +50,6 @@ class ItemID:
         """
         return T.ItemId(Id=self.id, ChangeKey=self.change_key)
 
-    def __hash__(self):
-        return hash(self.id)
-
-    def __eq__(self, other):
-        return self.id == other.id
-
     @classmethod
     def from_tree(cls, tree):
         """
