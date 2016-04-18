@@ -2,6 +2,7 @@
 Download Exchange events into Respa as reservations.
 """
 import iso8601
+from django.db.transaction import atomic
 from django.utils.timezone import now
 import datetime
 from lxml import etree
@@ -53,6 +54,7 @@ def _create_reservation_from_exchange(item_id, ex_resource, item_props):
     return ex_reservation
 
 
+@atomic
 def sync_from_exchange(ex_resource, future_days=30):
     """
     Sync current and future events for the given Exchange resource into
