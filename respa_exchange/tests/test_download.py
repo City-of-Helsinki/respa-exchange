@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import timedelta
 
 import pytest
@@ -14,8 +15,8 @@ from respa_exchange.tests.utils import moments_close_enough
 
 
 class FindItemsHandler(object):
-    def __init__(self, email_to_props):
-        self.email_to_props = email_to_props
+    def __init__(self):
+        self._email_to_props = defaultdict(dict)
 
     def handle_find_items(self, request):
         if not request.xpath("//m:FindItem", namespaces=NAMESPACES):
@@ -25,7 +26,7 @@ class FindItemsHandler(object):
         items = [
             self._generate_calendar_item(props)
             for props
-            in self.email_to_props.get(email_address, {})
+            in self._email_to_props.get(email_address, {}).values()
             ]
         return M.FindItemResponse(
             M.ResponseMessages(
@@ -64,12 +65,14 @@ class FindItemsHandler(object):
             )
         )
 
+    def add_item(self, email, props):
+        self._email_to_props[email][props["id"]] = props
 
-@pytest.mark.django_db
-def test_download(
-    settings, space_resource, exchange
-):
-    email = "%s@example.com" % get_random_string()
+    def delete_item(self, email, id):
+        self._email_to_props[email].pop(id, None)
+
+
+def _generate_item_dict():
     item_id = ItemID(get_random_string(), get_random_string())
     item_dict = {
         'id': item_id,
@@ -77,31 +80,51 @@ def test_download(
         'start': now(),
         'end': now() + timedelta(hours=1)
     }
-    delegate = FindItemsHandler({
-        email: [item_dict]
-    })
+    return item_dict
+
+
+@pytest.mark.django_db
+def test_download(
+    settings, space_resource, exchange
+):
+    email = "%s@example.com" % get_random_string()
+    other_email = "%s@example.com" % get_random_string()
+    item_dict = _generate_item_dict()
+    other_item_dict = _generate_item_dict()
+    item_id = item_dict["id"]
+    delegate = FindItemsHandler()
+    delegate.add_item(email, item_dict)
+    delegate.add_item(email, other_item_dict)
+    delegate.add_item(other_email, _generate_item_dict())  # We should never see this one
+
     SoapSeller.wire(settings, delegate)
     ex_resource = ExchangeResource.objects.create(
         resource=space_resource,
         principal_email=email,
         exchange=exchange
     )
-    assert ExchangeReservation.objects.count() == 0
+    assert ex_resource.reservations.count() == 0
+
     # First sync...
     sync_from_exchange(ex_resource)
-    assert ExchangeReservation.objects.count() == 1
+    assert ex_resource.reservations.count() == 2
     ex = _check_imported_reservation(item_id, item_dict)
+
     # Resync, with nothing changed:
     sync_from_exchange(ex_resource)
-    assert ExchangeReservation.objects.count() == 1
+    assert ex_resource.reservations.count() == 2
     assert _check_imported_reservation(item_id, item_dict).modified_at == ex.modified_at  # No resave occurred
-
 
     # Simulate a change on the Exchange end
     item_dict["end"] += timedelta(hours=2)
     sync_from_exchange(ex_resource)
-    assert ExchangeReservation.objects.count() == 1
+    assert ex_resource.reservations.count() == 2
     _check_imported_reservation(item_id, item_dict)
+
+    # And simulate deleting one of our two items
+    delegate.delete_item(email, item_id)
+    sync_from_exchange(ex_resource)
+    assert ex_resource.reservations.count() == 1
 
 
 def _check_imported_reservation(item_id, item_dict):
