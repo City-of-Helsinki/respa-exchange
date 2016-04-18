@@ -173,7 +173,7 @@ class ExchangeReservation(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.exchange_id:
-            self.exchange = ExchangeResource.objects.get(resource=self.reservation.resource)
+            self.exchange = ExchangeResource.objects.get(resource=self.reservation.resource).exchange
         self.clean()
         return super(ExchangeReservation, self).save(*args, **kwargs)
 
