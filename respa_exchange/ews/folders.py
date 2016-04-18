@@ -1,5 +1,4 @@
-from .base import EWSRequest
-from .xml import M, T
+from .xml import T
 
 
 def get_distinguished_folder_id_element(principal, folder_id):
@@ -16,20 +15,3 @@ def get_distinguished_folder_id_element(principal, folder_id):
             T.EmailAddress(principal)
         )
     )
-
-
-class GetFolderRequest(EWSRequest):
-    """
-    Encapsulates a request to get the details of a distinguished folder.
-    """
-
-    def __init__(self, principal, dist_id):
-        body = M.GetFolder(
-            M.FolderShape(
-                T.BaseShape("Default")
-            ),
-            M.FolderIds(
-                get_distinguished_folder_id_element(principal, dist_id)
-            )
-        )
-        super(GetFolderRequest, self).__init__(body=body, impersonation=principal)
