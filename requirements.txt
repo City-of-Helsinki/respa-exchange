@@ -6,15 +6,15 @@
 #
 
 autoflake==0.6.6
-autopep8==1.2.2
+autopep8==1.2.4
 iso8601==0.1.11
 isort==4.2.5
-lxml==3.6.0
+lxml==3.6.1
 pep8==1.7.0               # via autopep8
 pydocstyle==1.0.0
-pyflakes==1.1.0           # via autoflake
+pyflakes==1.2.3           # via autoflake
 python-ntlm3==1.0.2       # via requests-ntlm
-pytz==2016.3
-requests-ntlm==0.2.0
-requests==2.9.1
+pytz==2016.6.1
+requests-ntlm==0.3.0
+requests==2.10.0
 six==1.10.0
