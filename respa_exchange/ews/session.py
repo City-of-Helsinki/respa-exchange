@@ -44,11 +44,13 @@ class ExchangeSession(requests.Session):
         self.auth = HttpNtlmAuth(username, password)
         self.log = logging.getLogger("ExchangeSession")
 
-    def soap(self, request):
+    def soap(self, request, timeout=10):
         """
         Send an EWSRequest by SOAP.
 
         :type request: respa_exchange.base.EWSRequest
+        :param timeout: request timeout (see `requests` docs)
+        :type timeout: float|None|tuple[float, float]
         :rtype: lxml.etree.Element
         """
         envelope = request.envelop()
@@ -61,7 +63,7 @@ class ExchangeSession(requests.Session):
             "Accept": "text/xml",
             "Content-type": "text/xml; charset=%s" % self.encoding
         }
-        resp = self.post(self.url, data=body, headers=headers, auth=self.auth)
+        resp = self.post(self.url, data=body, headers=headers, auth=self.auth, timeout=timeout)
         return self._process_soap_response(resp)
 
     def _process_soap_response(self, resp):
