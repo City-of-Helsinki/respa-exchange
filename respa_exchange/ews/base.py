@@ -7,6 +7,7 @@ class EWSRequest(object):
     """
     Encapsulates an Exchange Web Services (EWS) request.
     """
+    version = "Exchange2010"
 
     def __init__(self, body, impersonation=None):
         """
@@ -39,7 +40,7 @@ class EWSRequest(object):
 
         return S.Envelope(
             S.Header(*[e for e in [
-                T.RequestServerVersion(Version="Exchange2010"),
+                T.RequestServerVersion(Version=self.version),
                 impersonation
             ] if e is not None]),
             S.Body(self.body)
