@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'helusers.providers.helsinki',
+    #'helusers.providers.helsinki',
 
     'munigeo',
     'helusers',
