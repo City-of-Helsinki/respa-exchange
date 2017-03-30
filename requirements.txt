@@ -4,11 +4,11 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-
 iso8601==0.1.11
-lxml==3.6.1
-python-ntlm3==1.0.2       # via requests-ntlm
-pytz==2016.6.1
-requests-ntlm==0.3.0
-requests==2.10.0
+lxml==3.7.0
+ntlm-auth==1.0.2          # via requests-ntlm
+ordereddict==1.1          # via ntlm-auth
+pytz==2016.10
+requests-ntlm==1.0.0
+requests==2.12.3
 six==1.10.0

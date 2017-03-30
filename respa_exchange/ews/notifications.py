@@ -141,7 +141,9 @@ class GetStreamingEventsRequest(EWSRequest):
         :param subscription_id: Subscription ID to get rid of
         """
         root = M.GetStreamingEvents(
-            M.SubscriptionId(subscription_id),
+            M.SubscriptionIds(
+                T.SubscriptionId(subscription_id),
+            ),
             M.ConnectionTimeout(str(timeout_minutes)),
         )
         super(GetStreamingEventsRequest, self).__init__(root, impersonation=principal)
