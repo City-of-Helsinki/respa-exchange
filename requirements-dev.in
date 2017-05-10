@@ -1,8 +1,0 @@
-autoflake
-autopep8
-isort
-pydocstyle
-pytest<3.0
-pytest-cov
-pytest-django<3.0
-pytest-logging
